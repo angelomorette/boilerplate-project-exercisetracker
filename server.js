@@ -14,9 +14,20 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
+//connect db
+mongoose.connect(process.env.MONGO_URI);
 
+//schema
+const UserSchema = new mongoose.Schema({
+  username: String,
+});
 
-
+const ExerciseSchema = new mongoose.Schema({
+  userId: { type: String, required: true},
+  description: String,
+  duration: Number,
+  date: Date
+});
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
