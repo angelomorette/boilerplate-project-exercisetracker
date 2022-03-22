@@ -96,9 +96,8 @@ app.get('/api/users/:_id/logs', (req, res) => {
   const from = new Date(req.query.from);
   const limit = Number(req.query.limit);
 
-  console.log(to);
-  console.log(from);
-
+  const finalDate = new Date(2999,12,31);
+  console.log(finalDate)
   User.findById(id, (error, user) => {
     if (error || !user) {
       res.send("Error ao tentar encontrar o usuario");
@@ -107,7 +106,7 @@ app.get('/api/users/:_id/logs', (req, res) => {
       Exercise.find({
         userId: id,
         date: {
-          $lt: to != "Invalid Date" ? to : Date.now(),
+          $lt: to != "Invalid Date" ? to : finalDate,
           $gt: from != "Invalid Date" ? from : 0,
         }
       })
@@ -128,10 +127,23 @@ app.get('/api/users/:_id/logs', (req, res) => {
             })),
           }
           res.json(result);
-        })
+        });
     }
   });
 });
+
+app.get('/api/users', (req, res) => {
+
+  User.find({}, 'username _id',(error, users) => {
+    if (error || !users) {
+      res.send("Error ao tentar encontrar os usuarios");
+    } else {
+      res.json(users)
+    }
+  })
+})
+
+   
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
